@@ -29,13 +29,8 @@ namespace ApplicationStarter
                 {
                     if (item.Attributes["path"].Value != null && File.Exists(item.Attributes["path"].Value))
                     {
-                        var forceAction = false;
                         var enabled = false;
                         var status = "Stopped";
-                        if (item.Attributes["force"].Value == "1")
-                        {
-                            forceAction = true;
-                        }
 
                         if (item.Attributes["enabled"].Value == "1")
                         {
@@ -56,7 +51,7 @@ namespace ApplicationStarter
                         }
 
                         var row = (DataGridViewRow)dataGridView.RowTemplate.Clone();
-                        row.CreateCells(dataGridView, item.Attributes["path"].Value, forceAction, enabled, status);
+                        row.CreateCells(dataGridView, item.Attributes["path"].Value, enabled, status);
                         dataGridView.Rows.Add(row);
                     }
                 }
@@ -80,9 +75,11 @@ namespace ApplicationStarter
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.DefaultExt = "exe";
-            openFileDialog.Filter = "exe files (*.exe)|*.exe";
+            var openFileDialog = new OpenFileDialog
+            {
+                DefaultExt = "exe",
+                Filter = "exe files (*.exe)|*.exe"
+            };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 var row = (DataGridViewRow)dataGridView.RowTemplate.Clone();
@@ -404,8 +401,8 @@ namespace ApplicationStarter
 
         private void bringMeToForeground()
         {
-            Process currentProcess = Process.GetCurrentProcess();
-            IntPtr hWnd = currentProcess.MainWindowHandle;
+            var currentProcess = Process.GetCurrentProcess();
+            var hWnd = currentProcess.MainWindowHandle;
             if (hWnd != User32.InvalidHandleValue)
             {
                 User32.SetForegroundWindow(hWnd);
