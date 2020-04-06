@@ -1,3 +1,3 @@
 Application Starter
 =====================
-A sample tool to start a bunch of windows executables in the given order.
+A simple tool to start a bunch of windows executables in the given order.
