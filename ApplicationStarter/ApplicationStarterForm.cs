@@ -323,6 +323,7 @@ namespace ApplicationStarter
             {
                 var isRunning = false;
                 string path = null;
+                var shouldStart = false;
                 foreach (DataGridViewCell cell in row.Cells)
                 {
                     if (cell.OwningColumn.Name == "Path")
@@ -340,11 +341,15 @@ namespace ApplicationStarter
                             }
                             catch { }
                         }
-                        break;
+                    }
+
+                    if (cell.OwningColumn.Name == "Enabled")
+                    {
+                        shouldStart = Convert.ToBoolean(cell.Value);
                     }
                 }
 
-                if (!isRunning)
+                if (!isRunning && shouldStart)
                 {
                     startProcess(path);
                 }
@@ -375,6 +380,8 @@ namespace ApplicationStarter
         private void stopApplications()
         {
             var processes = Process.GetProcesses();
+            Process currentProcess = null;
+            var shouldSop = false;
             foreach (DataGridViewRow row in dataGridView.Rows)
             {
                 foreach (DataGridViewCell cell in row.Cells)
@@ -387,14 +394,23 @@ namespace ApplicationStarter
                             {
                                 if (System.IO.Path.GetFullPath(process.MainModule.FileName) == System.IO.Path.GetFullPath(cell.Value.ToString()))
                                 {
-                                    process.Kill();
+                                    currentProcess = process;
                                     break;
                                 }
                             }
                             catch { }
                         }
-                        break;
                     }
+
+                    if (cell.OwningColumn.Name == "Enabled")
+                    {
+                        shouldSop = Convert.ToBoolean(cell.Value);
+                    }
+                }
+
+                if (currentProcess != null && shouldSop)
+                {
+                    currentProcess.Kill();
                 }
             }
         }
